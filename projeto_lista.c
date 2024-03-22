@@ -4,6 +4,51 @@
 
 /* run this program using the console pauser or add your own getch, system("pause") or input loop */
 
+typedef struct aluno{
+	char nome[255];
+	char rgm[8];
+} Aluno;
+
+#define max 60
+typedef struct lista{
+	Aluno alunos[max];
+	int n;
+} Lista;
+
+Lista criar(){
+	Lista lista;
+	lista.n = -1;
+	
+	return lista;
+}
+
+int listaVazia(Lista * lista){
+	return (lista->n == -1);
+}
+
+int listaCheia(Lista * lista){
+	return (Lista->n == max-1);
+}
+
+int getTamanho(Lista * lista){
+	return lista->n+1;
+}
+
+int deslocamentoE(){
+
+}
+
+int deslocamentoD(Lista * lista, int pos){
+	int i;
+
+	for (i=lista->n + 1; i> pos; i--){
+		lista->vetor[i] = lista->vetor[i-1];
+	}
+
+	return 1;
+}
+
+
 int main(int argc, char *argv[]) {
 	
 	setlocale(0, "portuguese");
