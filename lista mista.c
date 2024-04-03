@@ -9,6 +9,8 @@
 typedef struct aluno {
 	char nome[50];
 	char rgm[20];
+	 Disciplina *disciplinas; // Lista encadeada de disciplinas do aluno
+
 } Aluno;
 
 //define o MAX = 60
@@ -20,26 +22,11 @@ typedef struct lista {
 	int	n; //ultima posicao ocupada na lista de alunos
 } Lista;
 
-//define a estrutura da disciplina
-typedef struct disciplina{
-	char disci[50];
-} t_disciplina;
-
-//estrutura da lista
-typedef struct no{
-	t_disciplina dado; // elemento contendo os dados
-	struct no *prox; // ponteiro para próxima disciplina
-} t_no; // tipo de estrutura 
-
-//define t_lista como sendo outro nome para t_no
-typedef t_no * t_lista;
-//mostra a lista
-Lista criar(){
-	Lista lista; 
-	lista.n = -1; //faz com que a lista seja iniciada vazia
-		
-	return lista;
-}
+// Estrutura da disciplina
+typedef struct disciplina {
+    char nome[50];
+    struct disciplina *prox;
+} Disciplina;
 
 //verifica se a lista esta vazia
 int isVazia(Lista * lista) {
@@ -83,23 +70,7 @@ int inserir (Lista * lista, int pos, Aluno dado) {
     return 1; //se tiver ok
 }
 
-void inserir_ordenado(No **lista,int pos){
-	No *novo = malloc(sizeof(No));
-	
-	if(novo){
-		
-		novo->valor = pos;
-		// lista está vazia ?
-	
-	if(*lista == NULL){
-		novo->proximo = NULL;
-		*lista = novo;
-	}
-		
-	}else{
-		printf("Erro ao alocar a memória\n");
-	}
-}
+
 // desloca uma posicao para a esquerda
 // sempre quando for add uma nova posicao a direita
 int deslocaEsquerda(Lista * lista, int pos) {
@@ -125,6 +96,28 @@ int remover (Lista *lista, int pos) {
     deslocaEsquerda(lista, pos);
     (lista->n)--; //ultima posicao da lista e decrementada
     return 1;
+}
+
+// Função para adicionar uma disciplina à lista encadeada do aluno
+void adicionarDisciplina(Aluno *aluno, char *nomeDisciplina) {
+    Disciplina *novaDisciplina = malloc(sizeof(Disciplina));
+    if (novaDisciplina == NULL) {
+        printf("Erro ao alocar memória para disciplina.\n");
+        return;
+    }
+    strcpy(novaDisciplina->nome, nomeDisciplina);
+    novaDisciplina->prox = aluno->disciplinas;
+    aluno->disciplinas = novaDisciplina;
+}
+
+// Função para mostrar as disciplinas de um aluno
+void mostrarDisciplinas(Aluno aluno) {
+    Disciplina *atual = aluno.disciplinas;
+    printf("Disciplinas do aluno %s:\n", aluno.nome);
+    while (atual != NULL) {
+        printf("- %s\n", atual->nome);
+        atual = atual->prox;
+    }
 }
 
 //Lista * lista = ponteiro para a struct Lista
@@ -230,22 +223,11 @@ int main(int argc, char *argv[]) {
 	strcpy(aluno.nome, "Luis");
 	strcpy(aluno.rgm, "9708-4182");
 	inserir(&meusalunos, 0, aluno);
-	
-	strcpy(aluno.nome, "Ana");
-	strcpy(aluno.rgm, "4692-3690");
-	inserir(&meusalunos, 1, aluno);
-	
-	strcpy(aluno.nome, "David");
-	strcpy(aluno.rgm, "8263-3302");
-	inserir(&meusalunos, 2, aluno);
-	
-	strcpy(aluno.nome,"Bela");
-	strcpy(aluno.rgm, "8656-3620");
-	inserir(&meusalunos, 3, aluno);
-	
-	strcpy(aluno.nome, "Carlos");
-	strcpy(aluno.rgm, "4596-2630");
-	inserir(&meusalunos, 4, aluno);
+	 // Adicionando disciplinas ao aluno
+    adicionarDisciplina(&aluno, "Matemática");
+    adicionarDisciplina(&aluno, "Português");
+    adicionarDisciplina(&aluno, "História");
+
 	
 	//usa a funcao mostra() para imprimir os alunos que estao na struct Lista
 	ordena(&meusalunos);
@@ -344,6 +326,23 @@ int main(int argc, char *argv[]) {
 						case 2:{
 							//add nova disciplina
 							
+    Aluno aluno;
+    strcpy(aluno.nome, "Luis");
+	strcpy(aluno.rgm, "9708-4182");
+
+    char disciplina[50]; // Variável para armazenar o nome da disciplina inserida pelo usuário
+
+    // Adicionando disciplinas ao aluno
+    printf("Adicione as disciplinas do aluno (digite 'fim' para encerrar):\n");
+    while (1) {
+        printf("Disciplina: ");
+        scanf("%s", disciplina);
+        if (strcmp(disciplina, "fim") == 0) // Verifica se o usuário digitou 'fim' para encerrar a entrada
+            break;
+        adicionarDisciplina(&aluno, disciplina);
+    }
+
+							
 							break;
 						}
 						default:{
@@ -373,10 +372,7 @@ int main(int argc, char *argv[]) {
 			case 4:{
 				//mostra lista
 				
-				//ordena o novo aluno inserido e depois mostra na tela
-				ordena(&meusalunos);
-				mostrar(&meusalunos);
-				
+
 				break;
 			}
 			case 5:{
